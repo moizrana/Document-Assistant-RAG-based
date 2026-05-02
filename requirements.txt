@@ -1,4 +1,6 @@
-streamlit>=1.30.0
+fastapi
+uvicorn
+sse-starlette
 python-dotenv
 google-generativeai
 openai
@@ -11,3 +13,4 @@ numpy
 scikit-learn
 python-multipart
 torchvision
+redis

@@ -3,7 +3,8 @@
 An AI-powered document assistant that answers user queries using a custom knowledge base via **Retrieval-Augmented Generation (RAG)** architecture. Built with modern AI engineering best practices including hybrid search, cross-encoder reranking, and automatic LLM fallback.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-red?logo=streamlit)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
 ---
 
@@ -82,7 +83,7 @@ User Query
 | **LLM Integration** | Gemini + OpenRouter with automatic fallback |
 | **Context-Aware Generation** | Strict grounding prompts, source citation |
 | **Prompt Engineering** | XML-delimited context, hallucination reduction |
-| **Chat UI** | Premium Streamlit interface with dark theme |
+| **Chat UI** | Premium React Glassmorphism interface |
 
 ### Bonus
 | Feature | Description |
@@ -126,15 +127,23 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # 5. Configure environment
-# Create a .env file with your API keys:
+# Create a `.env` file (it is gitignored) with your API keys:
 # GEMINI_API_KEY=your_gemini_key
 # OPENROUTER_API_KEY=your_openrouter_key
 
-# 6. Run the application
-streamlit run app.py
+# 6. Run the FastAPI Backend
+uvicorn main:app --reload --port 8000
 ```
 
-The app will open at `http://localhost:8501`.
+### Start the React Frontend
+Open a new terminal window:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The application UI will open at `http://localhost:5173`.
 
 ---
 
@@ -142,10 +151,13 @@ The app will open at `http://localhost:8501`.
 
 ```
 RAG-Project/
-├── app.py                    # Main Streamlit application
-├── .streamlit/
-│   └── config.toml           # UI theme configuration
-├── src/
+├── main.py                   # FastAPI backend server
+├── frontend/                 # React UI application
+│   ├── src/
+│   │   ├── App.jsx           # Main React component
+│   │   ├── App.css           # Component styles
+│   │   └── index.css         # Global Glassmorphism CSS
+├── src/                      # Core RAG logic
 │   ├── config.py             # Environment & settings
 │   ├── document_loader.py    # PDF/HTML/TXT loaders
 │   ├── chunker.py            # Recursive text splitting

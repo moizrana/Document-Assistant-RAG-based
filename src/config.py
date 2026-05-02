@@ -37,16 +37,8 @@ class Settings:
     CACHE_SIMILARITY_THRESHOLD: float = float(os.getenv("CACHE_SIMILARITY_THRESHOLD", "0.95"))
     CACHE_MAX_SIZE: int = int(os.getenv("CACHE_MAX_SIZE", "100"))
 
-    # --- Paths ---
-    STORAGE_DIR: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "storage")
-    DATA_DIR: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-
-    @classmethod
-    def ensure_dirs(cls):
-        """Create required directories if they don't exist."""
-        os.makedirs(cls.STORAGE_DIR, exist_ok=True)
-        os.makedirs(cls.DATA_DIR, exist_ok=True)
+    # Paths are now handled exclusively in memory via UserSession mapping in the FastAPI backend
 
 
+# Instantiate settings
 settings = Settings()
-settings.ensure_dirs()

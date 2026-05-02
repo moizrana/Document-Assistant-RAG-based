@@ -79,39 +79,21 @@ class FAISSIndex:
     def size(self) -> int:
         return self.index.ntotal
 
-    def save(self, directory: str):
-        """Save FAISS index and chunk metadata to disk."""
+    def to_state(self) -> dict:
         import faiss
-        os.makedirs(directory, exist_ok=True)
-        faiss.write_index(self.index, os.path.join(directory, "faiss_index.bin"))
-        with open(os.path.join(directory, "faiss_chunks.pkl"), "wb") as f:
-            pickle.dump(self.chunks, f)
-        logger.info(f"Saved FAISS index ({self.index.ntotal} vectors) to {directory}")
+        return {
+            "dimension": self.dimension,
+            "index_bytes": faiss.serialize_index(self.index),
+            "chunks": self.chunks,
+        }
 
     @classmethod
-    def load(cls, directory: str) -> Optional["FAISSIndex"]:
-        """Load FAISS index and chunk metadata from disk."""
+    def from_state(cls, state: dict) -> "FAISSIndex":
         import faiss
-        index_path = os.path.join(directory, "faiss_index.bin")
-        chunks_path = os.path.join(directory, "faiss_chunks.pkl")
-
-        if not os.path.exists(index_path) or not os.path.exists(chunks_path):
-            return None
-
-        try:
-            index = faiss.read_index(index_path)
-            with open(chunks_path, "rb") as f:
-                chunks = pickle.load(f)
-
-            instance = cls.__new__(cls)
-            instance.dimension = index.d
-            instance.index = index
-            instance.chunks = chunks
-            logger.info(f"Loaded FAISS index ({index.ntotal} vectors) from {directory}")
-            return instance
-        except Exception as e:
-            logger.error(f"Failed to load FAISS index: {e}")
-            return None
+        obj = cls(int(state["dimension"]))
+        obj.index = faiss.deserialize_index(state["index_bytes"])
+        obj.chunks = state.get("chunks", [])
+        return obj
 
 
 class BM25Index:
@@ -175,36 +157,18 @@ class BM25Index:
     def size(self) -> int:
         return len(self.chunks)
 
-    def save(self, directory: str):
-        """Save BM25 index data to disk."""
-        os.makedirs(directory, exist_ok=True)
-        with open(os.path.join(directory, "bm25_data.pkl"), "wb") as f:
-            pickle.dump({
-                "chunks": self.chunks,
-                "tokenized_corpus": self.tokenized_corpus
-            }, f)
-        logger.info(f"Saved BM25 index ({len(self.chunks)} documents) to {directory}")
+    def to_state(self) -> dict:
+        return {
+            "chunks": self.chunks,
+            "tokenized_corpus": self.tokenized_corpus,
+        }
 
     @classmethod
-    def load(cls, directory: str) -> Optional["BM25Index"]:
-        """Load BM25 index data from disk."""
+    def from_state(cls, state: dict) -> "BM25Index":
         from rank_bm25 import BM25Okapi
 
-        data_path = os.path.join(directory, "bm25_data.pkl")
-        if not os.path.exists(data_path):
-            return None
-
-        try:
-            with open(data_path, "rb") as f:
-                data = pickle.load(f)
-
-            instance = cls()
-            instance.chunks = data["chunks"]
-            instance.tokenized_corpus = data["tokenized_corpus"]
-            if instance.tokenized_corpus:
-                instance.bm25 = BM25Okapi(instance.tokenized_corpus)
-            logger.info(f"Loaded BM25 index ({len(instance.chunks)} documents) from {directory}")
-            return instance
-        except Exception as e:
-            logger.error(f"Failed to load BM25 index: {e}")
-            return None
+        obj = cls()
+        obj.chunks = state.get("chunks", [])
+        obj.tokenized_corpus = state.get("tokenized_corpus", [])
+        obj.bm25 = BM25Okapi(obj.tokenized_corpus) if obj.tokenized_corpus else None
+        return obj
