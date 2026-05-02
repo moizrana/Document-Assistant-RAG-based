@@ -1,6 +1,6 @@
 # DocuMind AI — Intelligent Document Assistant
 
-An AI-powered document assistant that answers user queries using a custom knowledge base via **Retrieval-Augmented Generation (RAG)** architecture. Built with modern AI engineering best practices including hybrid search, cross-encoder reranking, and automatic LLM fallback.
+An AI-powered document assistant that answers user queries using a custom knowledge base via **Retrieval-Augmented Generation (RAG)** architecture. Built with modern AI engineering best practices including hybrid search, cross-encoder reranking, semantic caching, prompt guardrails, evaluation metrics and automatic LLM fallback.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
@@ -15,20 +15,20 @@ User Query
     │
     ▼
 ┌──────────────────────────────────────────────────┐
-│                 GUARDRAILS                        │
-│     Prompt injection detection & sanitization     │
+│                 GUARDRAILS                       │
+│     Prompt injection detection & sanitization    │
 └──────────────────────┬───────────────────────────┘
                        │
                        ▼
 ┌──────────────────────────────────────────────────┐
-│              SEMANTIC CACHE CHECK                 │
-│   Cosine similarity > 0.95 → return cached        │
+│              SEMANTIC CACHE CHECK                │
+│   Cosine similarity > 0.95 → return cached       │
 └──────────────────────┬───────────────────────────┘
                        │ (cache miss)
                        ▼
 ┌──────────────────────────────────────────────────┐
-│           QUERY EXPANSION (Optional)              │
-│     LLM generates 2 alternative phrasings         │
+│           QUERY EXPANSION (Optional)             │
+│     LLM generates 2 alternative phrasings        │
 └──────────────────────┬───────────────────────────┘
                        │
           ┌────────────┴────────────┐
@@ -42,28 +42,28 @@ User Query
                      ▼
 ┌──────────────────────────────────────────────────┐
 │       RECIPROCAL RANK FUSION (RRF)               │
-│    Merge dense + sparse results (k=60)            │
+│    Merge dense + sparse results (k=60)           │
 └──────────────────────┬───────────────────────────┘
                        ▼
 ┌──────────────────────────────────────────────────┐
-│         CROSS-ENCODER RERANKING                   │
-│   ms-marco-MiniLM-L-6-v2 precision scoring        │
+│         CROSS-ENCODER RERANKING                  │
+│   ms-marco-MiniLM-L-6-v2 precision scoring       │
 └──────────────────────┬───────────────────────────┘
                        ▼
 ┌──────────────────────────────────────────────────┐
-│           LLM GENERATION (with Fallback)          │
-│                                                    │
-│   Primary:  Gemini 1.5 Flash (Google API)         │
-│   Fallback: Llama 3.3 70B (OpenRouter)            │
-│   Fallback: Qwen3 80B A3B (OpenRouter)            │
-│                                                    │
-│   Strict system prompt for grounding              │
-│   Temperature 0.1 for factual accuracy            │
+│           LLM GENERATION (with Fallback)         │
+│                                                  │
+│   Primary:  Gemini 1.5 Flash (Google API)        │
+│   Fallback: Llama 3.3 70B (OpenRouter)           │
+│   Fallback: Qwen3 80B A3B (OpenRouter)           │
+│                                                  │
+│   Strict system prompt for grounding             │
+│   Temperature 0.1 for factual accuracy           │
 └──────────────────────┬───────────────────────────┘
                        ▼
 ┌──────────────────────────────────────────────────┐
-│         EVALUATION (Optional)                     │
-│   Faithfulness · Answer Relevancy · Context       │
+│         EVALUATION                               │
+│   Faithfulness · Answer Relevancy · Context      │
 └──────────────────────────────────────────────────┘
 ```
 
@@ -127,7 +127,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # 5. Configure environment
-# Create a `.env` file (it is gitignored) with your API keys:
+# Create a `.env` file with your API keys:
 # GEMINI_API_KEY=your_gemini_key
 # OPENROUTER_API_KEY=your_openrouter_key
 
@@ -169,10 +169,7 @@ RAG-Project/
 │   ├── cache.py              # Semantic caching
 │   ├── guardrails.py         # Prompt injection protection
 │   └── evaluator.py          # RAGAS-style evaluation
-├── data/                     # Sample documents
-├── storage/                  # Persisted indices (auto-generated)
 ├── requirements.txt
-├── .env                      # API keys (not committed)
 └── .gitignore
 ```
 
@@ -186,7 +183,7 @@ All settings are configurable via the `.env` file:
 |:---|:---|:---|
 | `GEMINI_API_KEY` | — | Google AI Studio API key |
 | `OPENROUTER_API_KEY` | — | OpenRouter API key |
-| `PRIMARY_MODEL` | `gemini-1.5-flash` | Primary LLM model |
+| `PRIMARY_MODEL` | `gemini-3.1-flash-lite-preview` | Primary LLM model |
 | `FALLBACK_MODEL_1` | `meta-llama/llama-3.3-70b-instruct:free` | First fallback |
 | `FALLBACK_MODEL_2` | `qwen/qwen3-next-80b-a3b-instruct:free` | Second fallback |
 | `CHUNK_SIZE` | `500` | Characters per chunk |
