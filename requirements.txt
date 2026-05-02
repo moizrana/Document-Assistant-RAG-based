@@ -1,0 +1,13 @@
+streamlit>=1.30.0
+python-dotenv
+google-generativeai
+openai
+sentence-transformers
+faiss-cpu
+rank-bm25
+PyMuPDF
+beautifulsoup4
+numpy
+scikit-learn
+python-multipart
+torchvision
