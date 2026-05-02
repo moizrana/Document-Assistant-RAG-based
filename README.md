@@ -1,14 +1,13 @@
-# 🧠 DocuMind AI — Intelligent Document Assistant
+# DocuMind AI — Intelligent Document Assistant
 
 An AI-powered document assistant that answers user queries using a custom knowledge base via **Retrieval-Augmented Generation (RAG)** architecture. Built with modern AI engineering best practices including hybrid search, cross-encoder reranking, and automatic LLM fallback.
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.30+-red?logo=streamlit)
-![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 User Query
@@ -69,7 +68,7 @@ User Query
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core
 | Feature | Description |
@@ -100,7 +99,7 @@ User Query
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.10+
@@ -136,16 +135,6 @@ streamlit run app.py
 ```
 
 The app will open at `http://localhost:8501`.
-
----
-
-## 📖 Usage
-
-1. **Upload Documents**: Use the sidebar to upload PDF, HTML, or TXT files.
-2. **Process**: Click "Process Documents" to ingest, chunk, embed, and index.
-3. **Ask Questions**: Type questions in the chat input.
-4. **View Sources**: Expand the "Sources" section under any answer to see which document chunks were used.
-5. **Toggle Features**: Use sidebar toggles to enable/disable query expansion, evaluation, caching, and guardrails.
 
 ---
 
@@ -190,7 +179,7 @@ All settings are configurable via the `.env` file:
 | `FALLBACK_MODEL_2` | `qwen/qwen3-next-80b-a3b-instruct:free` | Second fallback |
 | `CHUNK_SIZE` | `500` | Characters per chunk |
 | `CHUNK_OVERLAP` | `50` | Overlap between chunks |
-| `TOP_K_RETRIEVAL` | `20` | Candidates before reranking |
+| `TOP_K_RETRIEVAL` | `10` | Candidates before reranking |
 | `RERANK_TOP_N` | `5` | Final results after reranking |
 
 ---
@@ -212,8 +201,3 @@ Unlike bi-encoders, cross-encoders process query-document pairs jointly, providi
 ### API Fallback Chain
 If the primary Gemini API hits rate limits, the system automatically falls back to OpenRouter free models (Llama 3.3 70B → Qwen3 80B) without any user intervention or error.
 
----
-
-## 📝 License
-
-MIT License
