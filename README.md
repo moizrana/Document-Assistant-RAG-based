@@ -100,6 +100,21 @@ User Query
 
 ---
 
+---
+
+## Screenshots
+
+### Main Interface
+![Main App Interface](Images\Snapshot-1.png)
+
+### Document Upload
+![Document Upload Process](Images\Snapshot-2.png)
+
+### Query and Response
+![Query Example](Images/query-response.png)
+
+---
+
 ## Quick Start
 
 ### Prerequisites
